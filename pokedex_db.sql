@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-04-2025 a las 03:55:09
+-- Tiempo de generación: 29-04-2025 a las 07:39:45
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -67,22 +67,22 @@ INSERT INTO `pokemones` (`id`, `img`, `nombre`, `numero_pokedex`, `descripcion`,
 (12, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/8.png', 'Wartortle', '008', 'Su cola peluda lo ayuda a nadar.', 3, NULL, 22.50, 1.00, 405, 'Tortuga', 'Torrente', '2', 59, 63, 80, 65, 80, 58, '007', '009', 0),
 (13, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png', 'Blastoise', '009', 'Lanza agua por los cañones en su espalda.', 3, NULL, 85.50, 1.60, 530, 'Caparazón', 'Torrente', '2', 79, 83, 100, 85, 105, 78, '007', '008', 1),
 (14, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10.png', 'Caterpie', '010', 'Es un gusano que se alimenta de hojas.', 12, NULL, 2.90, 0.30, 195, 'Gusano', 'Polvo Escudo', '2', 45, 30, 35, 20, 20, 45, '011', '012', 0),
-(15, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/11.png', 'Metapod', '011', 'Es un capullo endurecido que protege su cuerpo.', 12, NULL, 9.90, 0.70, 205, 'Capullo', 'Mudar', '2', 50, 20, 55, 25, 25, 30, '012', NULL, 0),
-(16, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/12.png', 'Butterfree', '012', 'Vuela por campos y bosques en busca de néctar.', 12, 10, 32.00, 1.10, 395, 'Mariposa', 'Ojo Compuesto', '2', 60, 45, 50, 90, 80, 70, NULL, NULL, 0),
+(15, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/11.png', 'Metapod', '011', 'Es un capullo endurecido que protege su cuerpo.', 12, NULL, 9.90, 0.70, 205, 'Capullo', 'Mudar', '2', 50, 20, 55, 25, 25, 30, '010', '012', 0),
+(16, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/12.png', 'Butterfree', '012', 'Vuela por campos y bosques en busca de néctar.', 12, 10, 32.00, 1.10, 395, 'Mariposa', 'Ojo Compuesto', '2', 60, 45, 50, 90, 80, 70, '010', '011', 0),
 (17, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/13.png', 'Weedle', '013', 'Tiene un aguijón venenoso en su cabeza.', 12, 8, 3.20, 0.30, 195, 'Oruga', 'Escudo Polvo', '2', 40, 35, 30, 20, 20, 50, '014', '015', 0),
-(18, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/14.png', 'Kakuna', '014', 'Está casi inmóvil mientras se prepara para evolucionar.', 12, 8, 10.00, 0.60, 205, 'Capullo', 'Mudar', '2', 45, 25, 50, 25, 25, 35, '015', NULL, 0),
-(19, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/15.png', 'Beedrill', '015', 'Ataca en grupo con sus aguijones venenosos.', 12, 8, 29.50, 1.00, 395, 'Abeja Veneno', 'Enjambre', '2', 65, 90, 40, 45, 80, 75, NULL, NULL, 0),
+(18, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/14.png', 'Kakuna', '014', 'Está casi inmóvil mientras se prepara para evolucionar.', 12, 8, 10.00, 0.60, 205, 'Capullo', 'Mudar', '2', 45, 25, 50, 25, 25, 35, '013', '015', 0),
+(19, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/15.png', 'Beedrill', '015', 'Ataca en grupo con sus aguijones venenosos.', 12, 8, 29.50, 1.00, 395, 'Abeja Veneno', 'Enjambre', '2', 65, 90, 40, 45, 80, 75, '013', '014', 0),
 (20, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/16.png', 'Pidgey', '016', 'Un pequeño pájaro que vuela cerca del suelo.', 1, 10, 1.80, 0.30, 251, 'Pajarito', 'Vista Lince', '2', 40, 45, 40, 35, 35, 56, '017', '018', 0),
-(21, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/17.png', 'Pidgeotto', '017', 'Domina el cielo de su territorio.', 1, 10, 30.00, 1.10, 349, 'Avestruces', 'Vista Lince', '2', 63, 60, 55, 50, 50, 71, '018', NULL, 0),
-(22, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/18.png', 'Pidgeot', '018', 'Su plumaje brillante es un símbolo de su fuerza.', 1, 10, 39.50, 1.50, 479, 'Ave', 'Vista Lince', '2', 83, 80, 75, 70, 70, 101, NULL, NULL, 0),
+(21, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/17.png', 'Pidgeotto', '017', 'Domina el cielo de su territorio.', 1, 10, 30.00, 1.10, 349, 'Avestruces', 'Vista Lince', '2', 63, 60, 55, 50, 50, 71, '016', '018', 0),
+(22, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/18.png', 'Pidgeot', '018', 'Su plumaje brillante es un símbolo de su fuerza.', 1, 10, 39.50, 1.50, 479, 'Ave', 'Vista Lince', '2', 83, 80, 75, 70, 70, 101, '016', '018', 0),
 (23, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/19.png', 'Rattata', '019', 'Sus grandes dientes nunca dejan de crecer.', 1, NULL, 3.50, 0.30, 253, 'Ratón', 'Fuga', '2', 30, 56, 35, 25, 35, 72, '020', NULL, 0),
-(24, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/20.png', 'Raticate', '020', 'Sus potentes colmillos pueden romper cualquier cosa.', 1, NULL, 18.50, 0.70, 413, 'Ratón', 'Fuga', '2', 55, 81, 60, 50, 70, 97, NULL, NULL, 0),
+(24, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/20.png', 'Raticate', '020', 'Sus potentes colmillos pueden romper cualquier cosa.', 1, NULL, 18.50, 0.70, 413, 'Ratón', 'Fuga', '2', 55, 81, 60, 50, 70, 97, '019', NULL, 0),
 (25, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/21.png', 'Spearow', '021', 'Es territorial y muy ruidoso.', 1, 10, 2.00, 0.30, 262, 'Pájaro', 'Vista Lince', '2', 40, 60, 30, 31, 31, 70, '022', NULL, 0),
-(26, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/22.png', 'Fearow', '022', 'Vuela distancias de más de 300 km.', 1, 10, 38.00, 1.20, 442, 'Pájaro', 'Vista Lince', '2', 65, 90, 65, 61, 61, 100, NULL, NULL, 0),
+(26, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/22.png', 'Fearow', '022', 'Vuela distancias de más de 300 km.', 1, 10, 38.00, 1.20, 442, 'Pájaro', 'Vista Lince', '2', 65, 90, 65, 61, 61, 100, '021', NULL, 0),
 (27, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/23.png', 'Ekans', '023', 'Envuelve a su presa para inmovilizarla.', 8, NULL, 6.90, 2.00, 288, 'Serpiente', 'Muda', '2', 35, 60, 44, 40, 54, 55, '024', NULL, 0),
-(28, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/24.png', 'Arbok', '024', 'Puede aplastar objetos con su poderoso cuerpo.', 8, NULL, 65.00, 3.50, 448, 'Serpiente Cobra', 'Muda', '2', 60, 95, 69, 65, 79, 80, NULL, NULL, 0),
+(28, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/24.png', 'Arbok', '024', 'Puede aplastar objetos con su poderoso cuerpo.', 8, NULL, 65.00, 3.50, 448, 'Serpiente Cobra', 'Muda', '2', 60, 95, 69, 65, 79, 80, '023', NULL, 0),
 (29, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png', 'Pikachu', '025', 'Almacena electricidad en sus mejillas.', 4, NULL, 6.00, 0.40, 320, 'Ratón Eléctrico', 'Electricidad Estática', '2', 35, 55, 40, 50, 50, 90, '026', NULL, 0),
-(30, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/26.png', 'Raichu', '026', 'Descarga electricidad más potente que Pikachu.', 4, NULL, 30.00, 0.80, 485, 'Ratón Eléctrico', 'Electricidad Estática', '2', 60, 90, 55, 90, 80, 110, NULL, NULL, 0),
+(30, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/26.png', 'Raichu', '026', 'Descarga electricidad más potente que Pikachu.', 4, NULL, 30.00, 0.80, 485, 'Ratón Eléctrico', 'Electricidad Estática', '2', 60, 90, 55, 90, 80, 110, '025', NULL, 0),
 (31, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/27.png', 'Sandshrew', '027', 'Se enrosca para protegerse de sus enemigos.', 9, NULL, 12.00, 0.60, 300, 'Ratón', 'Velo Arena', '2', 50, 75, 85, 20, 30, 40, '028', NULL, 0),
 (32, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/28.png', 'Sandslash', '028', 'Su cuerpo cubierto de púas lo protege.', 9, NULL, 29.50, 1.00, 450, 'Ratón', 'Velo Arena', '2', 75, 100, 110, 45, 55, 65, '027', NULL, 0),
 (33, 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/29.png', 'Nidoran♀', '029', 'Sus pequeñas púas contienen veneno.', 8, NULL, 7.00, 0.40, 275, 'Veneno Pincho', 'Punto Tóxico', '2', 55, 47, 52, 40, 40, 41, '030', '031', 0),
@@ -264,12 +264,12 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id`, `user`, `correo`, `contraseña`, `favoritos`, `equipo`, `skin`) VALUES
-(1, 'AshKetchum', 'ash@pokemon.com', 'pikachu123', '001,004,007,025,150', '149,003,150,078,144,151', 1),
+(1, 'AshKetchum', 'ash@pokemon.com', 'pikachu123', '001,004,007,025,150,006', '003,006,005,002,001,009', 1),
 (2, 'MistyWaterflower', 'misty@pokemon.com', 'togepi456', '054,118,183,007,130', '143,003,103,006,094,001', 2),
 (3, 'BrockRock', 'brock@pokemon.com', 'onix789', '149,065,112,059,131,068', '149,065,112,059,131,068', 7),
 (4, 'GaryOak', 'gary@pokemon.com', 'eevee321', '009,065,076,130,094,151', '009,065,076,130,094,151', 3),
 (5, 'MayHaruka', 'may@pokemon.com', 'torchic654', '003,130,068,134,101,094\n\n', '130,003,068,094,134,150', 4),
-(12, 'Celeste', 'zoe@gmai.com', '123456', '', '', 6);
+(12, 'Celeste', 'zoe@gmai.com', '123456', '001,005,007,004,003,010,011,150', '078,144,068,105,104,009', 6);
 
 --
 -- Índices para tablas volcadas
