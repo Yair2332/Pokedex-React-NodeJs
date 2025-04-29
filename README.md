@@ -60,7 +60,7 @@ npm install
 npm start
 ```
 
-- El servidor se ejecutará en `http://localhost:5000`.
+- El servidor se ejecutará en `http://localhost:3001`.
 
 ### 4. Iniciar el frontend
 
