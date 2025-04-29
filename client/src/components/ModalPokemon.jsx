@@ -1,9 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function ModalPokemon({ pokeClick, darkMode, listPoke, buscarPokemones, equipoActu, setEquipoActu, userId }) {
+function ModalPokemon({ pokeClick, darkMode, listPoke, buscarPokemones, equipoActu, setEquipoActu, userId, favoritosUser, setPokeClick, setFavoritosUser }) {
 
     const [pokemon, setPokemon] = useState(null);
+    const isFavorite = favoritosUser && favoritosUser.split(',').includes(pokemon.numero_pokedex);
+
+    const actualizarPokemon = async (e) => {
+        e.stopPropagation(); // Evita que se active el click de la tarjeta
+        try {
+            setPokeClick(pokemon.numero_pokedex)
+            const favoritosArray = favoritosUser ? favoritosUser.split(',') : [];
+            const numeroActual = pokemon.numero_pokedex.toString();
+
+            let nuevosFavoritosArray;
+
+            if (favoritosArray.includes(numeroActual)) {
+                // Si ya estaba, lo saco
+                nuevosFavoritosArray = favoritosArray.filter(fav => fav !== numeroActual);
+            } else {
+                // Si no estaba, lo agrego
+                nuevosFavoritosArray = [...favoritosArray, numeroActual];
+            }
+
+            const nuevosFavoritosString = nuevosFavoritosArray.join(',');
+
+            // Actualizar en la base de datos
+            await axios.post('http://localhost:3001/actualizar-favorito', {
+                userId: userId,
+                nuevosFavoritos: nuevosFavoritosString
+            });
+
+            buscarPokemones()
+            // Actualizar visualmente
+            setFavoritosUser(nuevosFavoritosString);
+
+        } catch (error) {
+            console.error('Error al actualizar favorito:', error);
+        }
+        buscarPokemones()
+    };
 
     const buscarPokemon = async () => {
         try {
@@ -26,19 +62,7 @@ function ModalPokemon({ pokeClick, darkMode, listPoke, buscarPokemones, equipoAc
 
 
 
-    const actualizarPokemon = async () => {
-        try {
-            const pokeId = pokemon.numero_pokedex;
-            const isFav = pokemon.favorito === 1 ? 0 : 1
-            const response = await axios.post('http://localhost:3001/actualizar-favorito', { pokemonId: pokeId, esFavorito: isFav });
-            if (response.status === 200) {
-                buscarPokemones()
-            }
 
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
 
     const agregarPokeEquipo = async (numero_pokedex) => {
@@ -78,48 +102,48 @@ function ModalPokemon({ pokeClick, darkMode, listPoke, buscarPokemones, equipoAc
 
     const [pokemonAnimation, setPokemonAnimation] = useState('');
 
-const handleCatchPokemon = () => {
-    if (!canCatch) return;
-    
-    setCanCatch(false);
-    const opciones = [1, 1, 2, 2, 2, 1, 2, 3];
-    const shakes = opciones[Math.floor(Math.random() * opciones.length)];
+    const handleCatchPokemon = () => {
+        if (!canCatch) return;
 
-    setIsAnimating(true);
-    setPokemonAnimation('shake'); // Animación base de intento de captura
+        setCanCatch(false);
+        const opciones = [1, 1, 2, 2, 2, 1, 2, 3];
+        const shakes = opciones[Math.floor(Math.random() * opciones.length)];
 
-    let rotaciones = [-70, 70, -70];
-    let pasos = rotaciones.slice(0, shakes);
+        setIsAnimating(true);
+        setPokemonAnimation('shake'); // Animación base de intento de captura
 
-    pasos.forEach((rot, i) => {
-        setTimeout(() => setRotation(rot), i * 300);
-    });
+        let rotaciones = [-70, 70, -70];
+        let pasos = rotaciones.slice(0, shakes);
 
-    setTimeout(() => {
-        setIsAnimating(false);
-        setRotation(0);
-        if (shakes === 3) {
-            // Animación de éxito
-            setPokemonAnimation('success');
-            setCatchMessage('¡Se atrapó el Pokémon éxitosamente!');
-            setTimeout(() => {
-                setPokemonAnimation('');
-                setCatchMessage(null);
-                setCanCatch(true);
-                agregarPokeEquipo(pokemon.numero_pokedex);
-            }, 3000);
-        } else {
-            // Animación de fracaso
-            setPokemonAnimation('escape');
-            setCatchMessage('¡Ups! El Pokémon se escapó.');
-            setTimeout(() => {
-                setPokemonAnimation('');
-                setCatchMessage(null);
-                setCanCatch(true);
-            }, 1000);
-        }
-    }, pasos.length * 300);
-};
+        pasos.forEach((rot, i) => {
+            setTimeout(() => setRotation(rot), i * 300);
+        });
+
+        setTimeout(() => {
+            setIsAnimating(false);
+            setRotation(0);
+            if (shakes === 3) {
+                // Animación de éxito
+                setPokemonAnimation('success');
+                setCatchMessage('¡Se atrapó el Pokémon éxitosamente!');
+                setTimeout(() => {
+                    setPokemonAnimation('');
+                    setCatchMessage(null);
+                    setCanCatch(true);
+                    agregarPokeEquipo(pokemon.numero_pokedex);
+                }, 3000);
+            } else {
+                // Animación de fracaso
+                setPokemonAnimation('escape');
+                setCatchMessage('¡Ups! El Pokémon se escapó.');
+                setTimeout(() => {
+                    setPokemonAnimation('');
+                    setCatchMessage(null);
+                    setCanCatch(true);
+                }, 1000);
+            }
+        }, pasos.length * 300);
+    };
 
 
 
@@ -149,8 +173,13 @@ const handleCatchPokemon = () => {
                             <i className="fas fa-times"></i>
                         </button>
 
-                        <button type="button" className="modal-close-btn" onClick={() => { actualizarPokemon() }} style={{ left: "20px" }} >
-                            <i className={`fas fa-star ${pokemon.favorito === 1 ? 'text-warning' : 'text-white'}`}></i>
+                        <button
+                            type="button"
+                            className="modal-close-btn"
+                            style={{ left: "20px" }}
+                            onClick={actualizarPokemon}
+                        >
+                            <i className={`fas fa-star ${isFavorite ? 'text-warning' : 'text-white'}`}></i>
                         </button>
 
 

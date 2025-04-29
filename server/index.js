@@ -72,72 +72,81 @@ app.post('/login', (req, res) => {
 
 
 app.post('/user', (req, res) => {
+    const { id } = req.body;
 
-    const id = req.body.id;
+    let sql;
+    let params = [];
 
-    let sql = `SELECT * FROM usuario WHERE id=? `;
-
-    try {
-        db.query(sql, [id],(err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.status(201).send(result[0])
-            }
-        })
-    } catch (error) {
-        console.log(error);
+    if (id) {
+        sql = `SELECT * FROM usuario WHERE id = ?`;
+        params = [id];
+    } else {
+        sql = `SELECT * FROM usuario`;
     }
 
-})
+    try {
+        db.query(sql, params, (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send("Error en la base de datos");
+            }
+            
+            if (id) {
+                if (result.length > 0) {
+                    res.status(200).send(result[0]); 
+                } else {
+                    res.status(404).send({ message: "Usuario no encontrado" });
+                }
+            } else {
+                res.status(200).send(result); 
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error en el servidor");
+    }
+});
 
 
+
+
+
+// Ruta para obtener todos los pokémones o filtrar por favoritos
 app.post('/pokemones', (req, res) => {
-
-    const favoritos = req.body.favoritos;
+    const favoritos = req.body.favoritos; // Cadena como "001,005,026"
 
     let sql = `SELECT 
     p.img,
     p.nombre,
     p.numero_pokedex,
-    
     t1.nombre AS tipo1_nombre,
     t1.color AS tipo1_color,
-    
     t2.nombre AS tipo2_nombre,
     t2.color AS tipo2_color,
-    
     p.peso,
     p.altura,
-    p.poder,
-    p.favorito
-
+    p.poder
     FROM Pokemones p
     JOIN Tipos t1 ON p.tipo1 = t1.id
     LEFT JOIN Tipos t2 ON p.tipo2 = t2.id`;
 
     if (favoritos) {
-        sql += " WHERE p.favorito=1";
+        const favArray = favoritos.split(',');
+        sql += ` WHERE p.numero_pokedex IN ('${favArray.join("','")}')`;
     }
 
-    sql += " ORDER BY p.numero_pokedex"
+    sql += " ORDER BY p.numero_pokedex";
 
-    try {
-        db.query(sql, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.status(201).send(result)
-            }
-        })
-    } catch (error) {
-        console.log(error);
-    }
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error en la base de datos');
+        }
+        res.status(200).send(result);
+    });
+});
 
-})
-
-
-
+// Ruta para buscar pokémones por nombre
 app.post('/pokemonesPorNombre', (req, res) => {
     const { nombre, favoritos } = req.body;
 
@@ -151,88 +160,83 @@ app.post('/pokemonesPorNombre', (req, res) => {
         t2.color AS tipo2_color,
         p.peso,
         p.altura,
-        p.poder,
-        p.favorito
+        p.poder
     FROM Pokemones p
     JOIN Tipos t1 ON p.tipo1 = t1.id
     LEFT JOIN Tipos t2 ON p.tipo2 = t2.id
     WHERE p.nombre LIKE ?`;
 
+    const params = [`%${nombre}%`];
+
     if (favoritos) {
-        sql += " AND p.favorito=1";
+        const favArray = favoritos.split(',');
+        sql += ` AND p.numero_pokedex IN ('${favArray.join("','")}')`;
     }
 
-    sql += " ORDER BY p.numero_pokedex"
+    sql += " ORDER BY p.numero_pokedex";
 
-    try {
-        db.query(sql, [`%${nombre}%`], (err, result) => {
-            if (err) {
-                console.log(err);
-                res.status(500).send('Error en la base de datos');
-            } else {
-                res.status(200).send(result);
-            }
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('Error en el servidor');
-    }
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error en la base de datos');
+        }
+        res.status(200).send(result);
+    });
 });
 
 
-
-
-
 app.post('/pokemonFiltro', (req, res) => {
+    const { favoritos, tipo } = req.body;
 
-    const favoritos = req.body.favoritos;
-    const tipo = req.body.tipo;
 
     let sql = `SELECT 
-    p.img,
-    p.nombre,
-    p.numero_pokedex,
-    
-    t1.nombre AS tipo1_nombre,
-    t1.color AS tipo1_color,
-    
-    t2.nombre AS tipo2_nombre,
-    t2.color AS tipo2_color,
-    
-    p.peso,
-    p.altura,
-    p.poder,
-    p.favorito
-
+        p.img,
+        p.nombre,
+        p.numero_pokedex,
+        t1.nombre AS tipo1_nombre,
+        t1.color AS tipo1_color,
+        t2.nombre AS tipo2_nombre,
+        t2.color AS tipo2_color,
+        p.peso,
+        p.altura,
+        p.poder
     FROM Pokemones p
     JOIN Tipos t1 ON p.tipo1 = t1.id
     LEFT JOIN Tipos t2 ON p.tipo2 = t2.id`;
 
-    if (tipo) {
-        if (tipo !== 19) {
-            sql += " WHERE (p.tipo1=? OR p.tipo2=?)";
+    const whereClauses = [];
+    const params = [];
+
+    // --- FAVORITOS ---
+    let favArray = [];
+    if (favoritos && favoritos !== 'false' && favoritos.trim() !== '') {
+        favArray = favoritos.split(',');
+        whereClauses.push(`p.numero_pokedex IN (${favArray.map(() => '?').join(',')})`);
+        params.push(...favArray);
+    }
+
+    // --- TIPO ---
+    if (tipo && tipo !== 19) { // 19 = "Todos"
+        whereClauses.push("(p.tipo1 = ? OR p.tipo2 = ?)");
+        params.push(tipo, tipo);
+    }
+
+    if (whereClauses.length > 0) {
+        sql += " WHERE " + whereClauses.join(" AND ");
+    }
+
+    sql += " ORDER BY p.numero_pokedex";
+
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error en la base de datos');
         }
-    }
+  
+        res.status(200).send(result);
+    });
+});
 
-    if (favoritos) {
-        sql += " AND p.favorito =1";
-    }
-
-    sql += " ORDER BY p.numero_pokedex"
-
-    try {
-        db.query(sql, [tipo, tipo], (err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.status(201).send(result)
-            }
-        })
-    } catch (error) {
-        console.log(error);
-    }
-
-})
 
 
 
@@ -248,7 +252,6 @@ app.post('/userEquipo', (req, res) => {
                 return res.status(500).send('Error en la consulta');
             } else {
                 const equipoString = result[0].equipo;
-                console.log(result[0]);
                 // ejemplo: "001,025,004,007,150"
                 const equipoArray = equipoString.split(',');
 
@@ -258,11 +261,9 @@ app.post('/userEquipo', (req, res) => {
 
                 db.query(sql2, equipoArray, (err2, result2) => {
                     if (err2) {
-                        console.log(err2);
                         return res.status(500).send('Error obteniendo datos de los pokemones');
                     } else {
                         res.status(200).send(result2); // Te devuelve [{id: '001', altura: X}, ...]
-                        console.log(result2)
                     }
                 });
             }
@@ -340,17 +341,25 @@ WHERE p.numero_pokedex = ?;
 
 // Endpoint para actualizar favorito
 app.post('/actualizar-favorito', (req, res) => {
-    const { pokemonId, esFavorito } = req.body;
+    const { userId, nuevosFavoritos } = req.body;
 
-    const sql = 'UPDATE Pokemones SET favorito = ? WHERE numero_pokedex = ?';
+    console.log(userId);
+    console.log(nuevosFavoritos);
+    
 
-    db.query(sql, [esFavorito ? 1 : 0, pokemonId], (err, result) => {
+    // Validar que userId existe
+    if (!userId) {
+        return res.status(400).send('ID de usuario requerido');
+    }
+    
+    // Actualizar en la base de datos
+    const sql = 'UPDATE usuario SET favoritos = ? WHERE id = ?';
+    db.query(sql, [nuevosFavoritos, userId], (err, result) => {
         if (err) {
-            console.log(err);
-            res.status(500).send('Error al actualizar favorito');
-        } else {
-            res.status(200).send({ success: true });
+            console.error(err);
+            return res.status(500).send('Error al actualizar favoritos');
         }
+        res.status(200).send('Favoritos actualizados correctamente');
     });
 });
 

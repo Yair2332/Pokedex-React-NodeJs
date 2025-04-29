@@ -2,16 +2,17 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 function Banner({ userId, userDataEquipo, setUserDataEquipo, equipoActu, setEquipoActu, skin }) {
-    // Calcular el margen dinámico con los valores exactos que proporcionaste
+    // Calcular el margen dinámico para todos los Pokémon
     const calcularMargen = () => {
         const count = userDataEquipo.length;
-        if (count === 1) return -90;    // Margen para 1 Pokémon
-        if (count === 2) return 10;     // Margen para 2 Pokémon
-        if (count === 3) return -40;    // Margen para 3 Pokémon
-        if (count === 4) return -40;    // Margen para 4 Pokémon
-        if (count === 5) return -50;    // Margen para 5 Pokémon
-        return -55;                     // Margen para 6 Pokémon
+        if (count === 1) return -60;    // No mover
+        if (count === 2) return -20;
+        if (count === 3) return -30;
+        if (count === 4) return -30;
+        if (count === 5) return -50;
+        return -55; // Para 6 Pokémon
     };
+
 
     const margenPokemon = calcularMargen();
 
@@ -57,15 +58,18 @@ function Banner({ userId, userDataEquipo, setUserDataEquipo, equipoActu, setEqui
                 <img src={`./assets/personaje${skin}.png`} alt="Entrenador" />
             </div>
 
-            <div className="pokemon-team">
+            <div className="pokemon-team" style={{
+                transform: userDataEquipo.length === 1 ? 'none' : `translateX(${-margenPokemon / 2}px)`
+            }}>
                 {userDataEquipo.map((pokemon, index) => {
                     const idSinCeros = parseInt(pokemon.numero_pokedex);
                     const alturaPx = pokemon.altura * 100;
                     return (
-                        <div 
+                        <div
                             className={`pokemon ${index === 4 ? "pokemonPequeño1" : index === 5 ? "pokemonPequeño2" : ""}`}
                             style={{
                                 marginLeft: `${margenPokemon}px`,
+                                marginBottom: index === 1 ? '50px' : index === 2 ? '50px' : '',
                                 zIndex: index === 4 || index === 5 ? 3 : 2
                             }}
                         >
