@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function ModalPokemon({ pokeClick, darkMode, listPoke, buscarPokemones }) {
+function ModalPokemon({ pokeClick, darkMode, listPoke, buscarPokemones, equipoActu, setEquipoActu, userId }) {
 
     const [pokemon, setPokemon] = useState(null);
 
@@ -28,28 +28,111 @@ function ModalPokemon({ pokeClick, darkMode, listPoke, buscarPokemones }) {
 
     const actualizarPokemon = async () => {
         try {
-            const pokeId= pokemon.numero_pokedex;
-            const isFav= pokemon.favorito===1? 0 :1
-            const response = await axios.post('http://localhost:3001/actualizar-favorito', {pokemonId: pokeId, esFavorito: isFav});
-            if (response.status===200) {
+            const pokeId = pokemon.numero_pokedex;
+            const isFav = pokemon.favorito === 1 ? 0 : 1
+            const response = await axios.post('http://localhost:3001/actualizar-favorito', { pokemonId: pokeId, esFavorito: isFav });
+            if (response.status === 200) {
                 buscarPokemones()
             }
-            
+
         } catch (error) {
             console.error(error);
         }
     };
+
+
+    const agregarPokeEquipo = async (numero_pokedex) => {
+        try {
+            const equipoActual = equipoActu ? equipoActu.split(',') : [];
+
+            if (equipoActual.length >= 6) {
+                alert("¡Equipo lleno!");
+                return;
+            }
+            if (equipoActual.includes(numero_pokedex)) {
+                alert("¡Pokémon repetido!");
+                return;
+            }
+
+            const nuevoEquipoStr = equipoActu
+                ? `${equipoActu},${numero_pokedex}`
+                : numero_pokedex;
+
+            setEquipoActu(nuevoEquipoStr); // Actualiza el estado local
+            await axios.post('http://localhost:3001/actuEquipo', {
+                id: userId,
+                equipo: nuevoEquipoStr
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert("Error al agregar");
+        }
+    };
+
+
+    const [catchMessage, setCatchMessage] = useState(null);
+    const [rotation, setRotation] = useState(0);
+    const [isAnimating, setIsAnimating] = useState(false);
+    const [canCatch, setCanCatch] = useState(true); // Nuevo estado para controlar
+
+    const [pokemonAnimation, setPokemonAnimation] = useState('');
+
+const handleCatchPokemon = () => {
+    if (!canCatch) return;
     
+    setCanCatch(false);
+    const opciones = [1, 1, 2, 2, 2, 1, 2, 3];
+    const shakes = opciones[Math.floor(Math.random() * opciones.length)];
+
+    setIsAnimating(true);
+    setPokemonAnimation('shake'); // Animación base de intento de captura
+
+    let rotaciones = [-70, 70, -70];
+    let pasos = rotaciones.slice(0, shakes);
+
+    pasos.forEach((rot, i) => {
+        setTimeout(() => setRotation(rot), i * 300);
+    });
+
+    setTimeout(() => {
+        setIsAnimating(false);
+        setRotation(0);
+        if (shakes === 3) {
+            // Animación de éxito
+            setPokemonAnimation('success');
+            setCatchMessage('¡Se atrapó el Pokémon éxitosamente!');
+            setTimeout(() => {
+                setPokemonAnimation('');
+                setCatchMessage(null);
+                setCanCatch(true);
+                agregarPokeEquipo(pokemon.numero_pokedex);
+            }, 3000);
+        } else {
+            // Animación de fracaso
+            setPokemonAnimation('escape');
+            setCatchMessage('¡Ups! El Pokémon se escapó.');
+            setTimeout(() => {
+                setPokemonAnimation('');
+                setCatchMessage(null);
+                setCanCatch(true);
+            }, 1000);
+        }
+    }, pasos.length * 300);
+};
+
+
+
     if (!pokemon) return null;
 
 
-    
+
     const evolutionChain = [
         { num: pokemon.numero_pokedex, nombre: pokemon.nombre, img: pokemon.img },
         { num: pokemon.evo1_numero, nombre: pokemon.evo1_nombre, img: pokemon.evo1_img },
         { num: pokemon.evo2_numero, nombre: pokemon.evo2_nombre, img: pokemon.evo2_img },
     ]
-        .filter(p => p.num != null) 
+        .filter(p => p.num != null)
         .sort((a, b) => a.num - b.num);
 
     return (
@@ -66,22 +149,70 @@ function ModalPokemon({ pokeClick, darkMode, listPoke, buscarPokemones }) {
                             <i className="fas fa-times"></i>
                         </button>
 
-                        <button type="button" className="modal-close-btn" onClick={()=>{actualizarPokemon()}} style={{ left: "20px" }} >
+                        <button type="button" className="modal-close-btn" onClick={() => { actualizarPokemon() }} style={{ left: "20px" }} >
                             <i className={`fas fa-star ${pokemon.favorito === 1 ? 'text-warning' : 'text-white'}`}></i>
                         </button>
 
-                        <div className="pokemon-modal-img-container">
+
+
+                        <div
+                            className={`pokemon-modal-img-container ${pokemonAnimation}`}
+                        >
                             <img
                                 id="modalPokemonImg"
                                 src={pokemon.img}
                                 className="pokemon-modal-img"
                                 alt={pokemon.nombre}
+                                style={{
+                                    transform: pokemonAnimation === 'shake' ? 'scale(1.1)' : 'scale(1)',
+                                    transition: 'transform 0.3s'
+                                }}
                             />
                         </div>
 
                         <div className="pokemon-modal-info">
                             <h2 id="modalPokemonName" className="pokemon-modal-name">{pokemon.nombre}</h2>
                             <span id="modalPokemonId" className="pokemon-modal-id">#{pokemon.numero_pokedex}</span>
+
+                            <button
+                                type="button"
+                                className="modal-close-pokebola"
+                                onClick={handleCatchPokemon}
+                                style={{
+                                    top: "80px",
+                                    left: "20px",
+                                    transition: "transform 0.3s",
+                                    transform: `rotate(${rotation}deg)`,
+                                    pointerEvents: isAnimating || !canCatch ? "none" : "auto",
+                                    opacity: canCatch ? 1 : 0.5 // Cambia la opacidad cuando no se puede usar
+                                }}
+                                disabled={isAnimating || !canCatch}
+                            >
+                                <img
+                                    src="https://cdn.pixabay.com/photo/2016/07/23/13/21/pokemon-1536855_1280.png"
+                                    alt="Pokéball"
+                                    style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+                                />
+                            </button>
+
+
+
+                            {catchMessage && (
+                                <div style={{
+                                    position: 'relative',
+                                    bottom: '20px',
+                                    left: '50%',
+                                    marginTop: "10px",
+                                    transform: 'translateX(-50%)',
+                                    backgroundColor: catchMessage.includes('éxito') ? 'green' : 'red',
+                                    color: 'white',
+                                    padding: '10px',
+                                    borderRadius: '5px',
+                                    zIndex: 1000,
+                                }}>
+                                    {catchMessage}
+                                </div>
+                            )}
 
                             <div className="pokemon-modal-types" id="modalPokemonTypes">
                                 <span

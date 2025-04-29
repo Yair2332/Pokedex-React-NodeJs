@@ -4,19 +4,19 @@ function PokemonCard({ pokemon, setPokeClick, buscarPokemones }) {
 
     const actualizarPokemon = async () => {
         try {
-            const pokeId= pokemon.numero_pokedex;
-            const isFav= pokemon.favorito===1? 0 :1
-            const response = await axios.post('http://localhost:3001/actualizar-favorito', {pokemonId: pokeId, esFavorito: isFav});
-            if (response.status===200) {
+            const pokeId = pokemon.numero_pokedex;
+            const isFav = pokemon.favorito === 1 ? 0 : 1
+            const response = await axios.post('http://localhost:3001/actualizar-favorito', { pokemonId: pokeId, esFavorito: isFav });
+            if (response.status === 200) {
                 buscarPokemones()
             }
-            
+
         } catch (error) {
             console.error(error);
         }
     };
 
-    
+
     // Carta de pokemon
     return (
         <div className="pokemon-card"
@@ -33,8 +33,12 @@ function PokemonCard({ pokemon, setPokeClick, buscarPokemones }) {
                 <img src={pokemon.img} className="pokemon-img" alt={pokemon.nombre} />
             </div>
 
-            <button type="button" className="modal-close-btn" style={{ left: "20px" }} onClick={()=>{actualizarPokemon()}}>
+            <button type="button" className="modal-close-btn" style={{ left: "20px" }} onClick={() => { actualizarPokemon() }}>
                 <i className={`fas fa-star ${pokemon.favorito === 1 ? 'text-warning' : 'text-white'}`}></i>
+            </button>
+
+            <button type="button" className="modal-close-btn" style={{ top: "80px", left: "20px" }}>
+                <img src="https://cdn.pixabay.com/photo/2016/07/23/13/21/pokemon-1536855_1280.png" alt="" srcset="" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "50%" }} />
             </button>
 
             <div className="pokemon-info">

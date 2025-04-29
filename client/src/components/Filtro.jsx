@@ -158,7 +158,10 @@ function Filtro({ setPokeSelect, favoritos, setFavoritos, setListPoke }) {
                                 id="favoritesOnly"
                                 checked={favoritos}
                                 onChange={(event) => { 
-                                    setFavoritos(event.target.checked);
+                                    {
+                                        setFavoritos(event.target.checked);
+                                        setActiveButton('all')
+                                    }
                                 }}
                             />
                             <label className="form-check-label" htmlFor="favoritesOnly">Solo favoritos</label>
